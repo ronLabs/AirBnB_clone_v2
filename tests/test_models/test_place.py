@@ -1,69 +1,58 @@
 #!/usr/bin/python3
-""" """
-from tests.test_models.test_base_model import test_basemodel
-from models.place import Place
+"""User test"""
+from datetime import datetime
+import inspect
+import models
+import pep8 as pycodestyle
+from models.base_model import BaseModel
+import time
+import unittest
+from unittest import mock
+Model = models.place.Place
+module_doc = models.place.__doc__
+path1 = "models/place.py"
+path2 = "tests/test_models/test_place.py"
 
 
-class test_Place(test_basemodel):
-    """ """
+class DocsTest(unittest.TestCase):
+    """Test to check behaviors"""
 
-    def __init__(self, *args, **kwargs):
-        """ """
-        super().__init__(*args, **kwargs)
-        self.name = "Place"
-        self.value = Place
+    @classmethod
+    def setUpClass(self):
+        """setting up tests"""
+        self.self_funcs = inspect.getmembers(Model, inspect.isfunction)
 
-    def test_city_id(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.city_id), str)
+    def test_pep8(self):
+        """Testing pep8"""
+        for path in [path1,
+                     path2]:
+            with self.subTest(path=path):
+                errors = pycodestyle.Checker(path).check_all()
+                self.assertEqual(errors, 0)
 
-    def test_user_id(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.user_id), str)
+    def test_module_docstring(self):
+        """Test module docstring"""
+        self.assertIsNot(module_doc, None,
+                         "place.py needs a docstring")
+        self.assertTrue(len(module_doc) > 1,
+                        "test_place.py needs a docstring")
 
-    def test_name(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.name), str)
+        """Test classes doctring"""
+        self.assertIsNot(BaseModel.__doc__, None,
+                         "Place class needs a docstring")
+        self.assertTrue(len(BaseModel.__doc__) >= 1,
+                        "Place class needs a docstring")
 
-    def test_description(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.description), str)
-
-    def test_number_rooms(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.number_rooms), int)
-
-    def test_number_bathrooms(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.number_bathrooms), int)
-
-    def test_max_guest(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.max_guest), int)
-
-    def test_price_by_night(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.price_by_night), int)
-
-    def test_latitude(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.latitude), float)
-
-    def test_longitude(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.latitude), float)
-
-    def test_amenity_ids(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.amenity_ids), list)
+    def test_func_docstrings(self):
+        """test func dostrings"""
+        for func in self.self_funcs:
+            with self.subTest(function=func):
+                self.assertIsNot(
+                    func[1].__doc__,
+                    None,
+                    "{:s} method needs a docstring".format(func[0])
+                )
+                self.assertTrue(
+                    len(func[1].__doc__) > 1,
+                    "{:s} method needs a docstring".format(func[0])
+                )
