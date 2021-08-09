@@ -61,6 +61,7 @@ class TestBaseModelDocs(unittest.TestCase):
 
 class TestinClassModel(unittest.TestCase):
     """Class Model Test"""
+
     def test_instance(self):
         """ test if the object is correctly created"""
         instance = BaseModel()
@@ -81,3 +82,21 @@ class TestinClassModel(unittest.TestCase):
                 self.assertIs(type(instance.__dict__[attr]), typ)
         self.assertEqual(instance.name, "Holbie")
         self.assertEqual(instance.number, 11)
+
+    def test_datetime(self):
+        """testing correct datetime assignation
+        correct assignation of created_at and updated_at"""
+        created_at = datetime.now()
+        instance1 = BaseModel()
+        updated_at = datetime.now()
+        self.assertEqual(created_at <= instance1.created_at <=
+                         updated_at, True)
+        time.sleep(0.1)
+        created_at = datetime.now()
+        instance2 = BaseModel()
+        updated_at = datetime.now()
+        self.assertTrue(created_at <= instance2.created_at <= updated_at, True)
+        self.assertEqual(instance1.created_at, instance1.created_at)
+        self.assertEqual(instance2.updated_at, instance2.updated_at)
+        self.assertNotEqual(instance1.created_at, instance2.created_at)
+        self.assertNotEqual(instance1.updated_at, instance2.updated_at)
