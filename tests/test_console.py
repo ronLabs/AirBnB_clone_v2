@@ -5,7 +5,7 @@ test console
 import unittest
 from unittest.mock import patch
 from io import StringIO
-# import pep8
+import pep8
 import os
 import json
 import console
@@ -56,12 +56,6 @@ class ConsoleTest(unittest.TestCase):
             HBNBCommand().onecmd("\n")
             self.assertEqual('', f.getvalue())
 
-    def test_quit(self):
-        """testing quit"""
-        with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd("quit")
-            self.assertEqual('', f.getvalue())
-
 class CreateTest(unittest.TestCase):
     """testing command test in console"""
 
@@ -86,7 +80,7 @@ class CreateTest(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all User")
             self.assertEqual(
-                            '["[User', f.getvalue()[:7])
+                            '[[User]', f.getvalue()[:7])
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create BaseModel")
         self.assertRegex(f.getvalue(), '^[0-9a-f]{8}-[0-9a-f]{4}-[1-5]'
