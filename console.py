@@ -210,9 +210,9 @@ class HBNBCommand(cmd.Cmd):
         print("Destroys an individual instance of a class")
         print("[Usage]: destroy <className> <objectId>\n")
 
-    def do_all(self, arg):
+    def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
-        args = shlex.split(arg)
+        args = shlex.split(args)
         ob_list = []
         if len(args) == 0:
             ob_dic = models.storage.all()
