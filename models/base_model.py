@@ -3,18 +3,19 @@
 import uuid
 from datetime import datetime
 import models
-import sqlachemy
-from sqlachemy import Column, String, Datetime
 
+from sqlalchemy import Column, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+
 
 class BaseModel:
 
     if models.storage == "db":
         id = Column(String(60), primary_key=True)
-        created_at = Column(Datetime, default=datetime.utcnow)
-        updated_at = Column(Datetime, default=datetime.utcnow)
+        created_at = Column(DateTime, default=datetime.utcnow)
+        updated_at = Column(DateTime, default=datetime.utcnow)
 
     """A base class for all hbnb models"""
     def __init__(self, *args, **kwargs):
@@ -58,15 +59,22 @@ class BaseModel:
 
     def to_dict(self):
         """Convert instance into dict format"""
-        n_dict = self.__dict__.copy()
-        if "created_at" in n_dict:
-            n_dict["created_at"] = n_dict["created_at"].strftime(dtm)
-        if "updated_at" in n_dict:
-            n_dict["updated_at"] = n_dict["updated_at"].strftime(dtm)
-        n_dict["__class__"] = self.__class__.__name__
-        if "_sa_instance_state" in n_dict:
-            del n_dict["_sa_instance_state"]
-        return n_dict
+        # n_dict = self.__dict__.copy()
+        # if "created_at" in n_dict:
+        #     n_dict["created_at"] = n_dict["created_at"].strftime(dtm)
+        # if "updated_at" in n_dict:
+        #     n_dict["updated_at"] = n_dict["updated_at"].strftime(dtm)
+        # n_dict["__class__"] = self.__class__.__name__
+        # if "_sa_instance_state" in n_dict:
+        #     del n_dict["_sa_instance_state"]
+        # return n_dict
+        dictionary = {}
+        dictionary.update(self.__dict__)
+        dictionary.update({'__class__':
+                          (str(type(self)).split('.')[-1]).split('\'')[0]})
+        dictionary['created_at'] = self.created_at.isoformat()
+        dictionary['updated_at'] = self.updated_at.isoformat()
+        return dictionary
 
     def delete(self):
         """delete the current instance from the storage"""
