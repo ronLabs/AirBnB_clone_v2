@@ -8,7 +8,7 @@ from sqlalchemy import Column, Integer, Float, String, ForeignKey
 class Place(BaseModel, Base):
     """ A place to stay """
     if models.is_db == 'db':
-        __tablename__ = 'ṕlaces'
+        __tablename__ = 'places'
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         name = Column(String(128), nullable=False)
