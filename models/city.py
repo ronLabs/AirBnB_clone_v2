@@ -2,6 +2,7 @@
 """ City Module for HBNB project """
 from models.base_model import Base, BaseModel
 from sqlalchemy import Column, String, ForeignKey
+import models
 
 
 class City(BaseModel, Base):
