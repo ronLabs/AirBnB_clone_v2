@@ -114,41 +114,30 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def dic_creator(self, args):
-        """creates a dictionary from a list"""
-        dic = {}
-        for arg in args:
-            if "=" in arg:
-                vals_toa_add = arg.split('=', 1)
-                key = vals_toa_add[0]
-                value = vals_toa_add[1]
-                if value[0] == value[-1] == '"':
-                    value = value.replace('"', '').replace('_', ' ')
-                else:
-                    try:
-                        value = int(value)
-                    except:
-                        try:
-                            value = float(value)
-                        except:
-                            continue
-                dic[key] = value
-        return (dic)      
-
     def do_create(self, args):
         """ Create an object of any class"""
-        args = args.split()
-        if len(args) == 0:
+        args = args.split(' ')
+        if not args:
             print("** class name missing **")
             return
-        if args[0] in  HBNBCommand.classes:
-            dic = self.dic_creator(args[1:])
-            instance = HBNBCommand.classes[args[0]](**dic)
-        else:
+        elif args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        print(instance.id)
-        instance.save()
+        [cls, *str_args] = args
+        kwargs = dict()
+        for arg in str_args:
+            [key, val] = arg.split('=')
+            val = val.replace('_', ' ')
+            kwargs[key] = eval(val)
+
+        if not kwargs:
+            new_instance = HBNBCommand.classes[cls]()
+        else:
+            new_instance = HBNBCommand.classes[cls](**kwargs)
+            storage.new(new_instance)
+
+        storage.save()
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
