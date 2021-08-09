@@ -41,11 +41,8 @@ class DBStorage:
             res_list.extend(self.__session.query(User))
         else:
             res_list = res_list = self.__session.query(cls)
-        dic = {'{}.{}'.format(type(obj).__name__, obj.id): obj
+        return {'{}.{}'.format(type(obj).__name__, obj.id): obj
                 for obj in res_list}
-        if "_sa_instance_state" in dic:
-            del dic["_sa_instance_state"]
-        return dic
 
     def new(self, obj):
         """ Adds an objet to the current db session """
