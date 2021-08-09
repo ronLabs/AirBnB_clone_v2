@@ -57,3 +57,27 @@ class TestBaseModelDocs(unittest.TestCase):
                     len(func[1].__doc__) > 1,
                     "{:s} method needs a docstring".format(func[0])
                 )
+
+
+class TestinClassModel(unittest.TestCase):
+    """Class Model Test"""
+    def test_instance(self):
+        """ test if the object is correctly created"""
+        instance = BaseModel()
+        self.assertIs(type(instance), BaseModel)
+        instance.name = "Holbie"
+        instance.number = 11
+        types_attr = {
+            "id": str,
+            "created_at": datetime,
+            "updated_at": datetime,
+            "name": str,
+            "number": int
+        }
+
+        for attr, typ in types_attr.items():
+            with self.subTest(attr=attr, typ=typ):
+                self.assertIn(attr, instance.__dict__)
+                self.assertIs(type(instance.__dict__[attr]), typ)
+        self.assertEqual(instance.name, "Holbie")
+        self.assertEqual(instance.number, 11)
