@@ -81,7 +81,7 @@ class TestDbStorage(unittest.TestCase):
         cls.user = User()
         cls.user.first_name = "123"
         cls.user.last_name = "321"
-        cls.storate = FileStorage()
+        cls.storage = FileStorage()
 
     @classmethod
     def td(self):
@@ -113,3 +113,31 @@ class TestDbStorage(unittest.TestCase):
         storage.new(user)
         key = user.__class__.__name__ + "." + str(user.id)
         self.assertIsNotNone(obj[key])
+
+    def test_reload_dbtorage(self):
+        """
+        tests reload
+        """
+        self.storage.save()
+        Root = os.path.dirname(os.path.abspath("console.py"))
+        path = os.path.join(Root, "file.json")
+        with open(path, 'r') as f:
+            lines = f.readlines()
+        try:
+            os.remove(path)
+        except Exception:
+            pass
+        self.storage.save()
+        with open(path, 'r') as f:
+            lines2 = f.readlines()
+        self.assertEqual(lines, lines2)
+        try:
+            os.remove(path)
+        except Exception:
+            pass
+        with open(path, "w") as f:
+            f.write("{}")
+        with open(path, "r") as r:
+            for line in r:
+                self.assertEqual(line, "{}")
+        self.assertIs(self.storage.reload(), None)
