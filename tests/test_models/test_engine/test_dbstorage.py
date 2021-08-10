@@ -20,8 +20,8 @@ import pep8 as pycodestyle
 
 Model = file_storage.FileStorage
 FileStorage = file_storage.FileStorage
-path1 = "models/engine/file_storage.py"
-path2 = "tests/test_models/test_engine/test_file_storage.py"
+path1 = "models/engine/db_storage.py"
+path2 = "tests/test_models/test_engine/test_dbstorage.py"
 module_doc = models.city.__doc__
 
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "Review": Review,
@@ -71,51 +71,3 @@ class TestBaseModelDocs(unittest.TestCase):
                     len(func[1].__doc__) > 1,
                     "{:s} method needs a docstring".format(func[0])
                 )
-
-
-class Test_FileStorage(unittest.TestCase):
-    """Testing proper behavrious"""
-    def dic_tests(self):
-        """Testing that FileStorage_objects returns properly"""
-        f_storage = FileStorage()
-        dic = f_storage.all()
-        self.assertEqual(type(dic, dict))
-        self.assertIs(dic, f_storage.__Filestorage.__objects)
-
-    @unittest.skipIf(models.is_db == 'db', 'Not testing Dbstorage')
-    def test_new_method(self):
-        """testing that  new method saves on __objects attr"""
-        storage = FileStorage()
-        save = FileStorage._FileStorage__objects
-        FileStorage._FileStorage__objects = {}
-        test_dict = {}
-        for key, value in classes.items():
-            with self.subTest(key=key, value=value):
-                instance = value()
-                instance_key = instance.__class__.__name__ + "." + instance.id
-                storage.new(instance)
-                test_dict[instance_key] = instance
-                self.assertEqual(test_dict, storage._FileStorage__objects)
-        FileStorage._FileStorage__objects = save
-
-    @unittest.skipIf(models.is_db == 'db', 'Not testing Dbstorage')
-    def test_save(self):
-        """Testing proper behaviour saving in file.json"""
-        os.remove("file.json")
-        storage = FileStorage()
-        new_dict = {}
-        for key, value in classes.items():
-            instance = value()
-            instance_key = instance.__class__.__name__ + "." + instance.id
-            new_dict[instance_key] = instance
-        save = FileStorage._FileStorage__objects
-        FileStorage._FileStorage__objects = new_dict
-        storage.save()
-        FileStorage._FileStorage__objects = save
-        for key, value in new_dict.items():
-            new_dict[key] = value.to_dict()
-        string = json.dumps(new_dict)
-        with open("file.json", "r") as f:
-            js = f.read()
-        self.assertEqual(json.loads(string), json.loads(js))
-        os.remove("file.json")
