@@ -5,6 +5,7 @@ import inspect
 import models
 import pep8 as pycodestyle
 from models.base_model import BaseModel
+from models.engine.db_storage import DBStorage
 import time
 import unittest
 from unittest import mock
@@ -59,6 +60,7 @@ class DocsTest(unittest.TestCase):
                 )
 
 
+@unittest.skipIf(type(models.storage) == DBStorage, "Testing DBStorage")
 class TestClassModel(unittest.TestCase):
     """testing BaseModel Class"""
     @mock.patch('models.user')

@@ -12,6 +12,7 @@ import json
 import console
 import tests
 import inspect
+import models
 from console import HBNBCommand
 from models.base_model import BaseModel
 from models.user import User
@@ -21,6 +22,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from models.engine.file_storage import FileStorage
+from models.engine.db_storage import DBStorage
 Model = HBNBCommand
 City = HBNBCommand
 module_doc = HBNBCommand.__doc__
@@ -109,6 +111,7 @@ class ConsoleTest(unittest.TestCase):
             self.assertEqual('', f.getvalue())
 
 
+@unittest.skipIf(type(models.storage) == DBStorage, "Testing DBStorage")
 class CreateTest(unittest.TestCase):
     """testing command test in console"""
 

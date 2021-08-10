@@ -7,10 +7,12 @@ from datetime import datetime
 from models.engine.db_storage import DBStorage
 from models import *
 from console import HBNBCommand
+from models.city import City
 
 @unittest.skipIf(models.is_db != 'db', 'Not testing Dbstorage')
 class Test_dbstorage(unittest.TestCase):
     """ testing dbstorage class """
+    @classmethod
     def setUpClass(self):
         """setting up class"""
         self.HNBNcom = HBNBCommand
@@ -21,11 +23,3 @@ class Test_dbstorage(unittest.TestCase):
                      'created_at': datetime(2021, 10, 8, 13, 31, 53, 331997),
                      'name': 'holbie'}
         self.model = City(arg_list)
-
-    def test_init(self):
-        """testing init"""
-        self.assertNotEqual(self.Db._DBStorage__engine, None)
-        self.assertEqual(self.Db._DBStorage__session, None)
-
-    def test_all_method(slef):
-        """testing that all method return all args"""
