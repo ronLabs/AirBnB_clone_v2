@@ -73,6 +73,7 @@ class TestBaseModelDocs(unittest.TestCase):
                 )
 
 
+@unittest.skipIf(models.is_db == 'db', 'Not testing Dbstorage')
 class Test_FileStorage(unittest.TestCase):
     """Testing proper behavrious"""
     def dic_tests(self):

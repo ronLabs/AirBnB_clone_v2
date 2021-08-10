@@ -76,17 +76,17 @@ class TestDbStorage(unittest.TestCase):
     """testing db_storage"""
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         """settuin up test"""
-        self.user = User()
-        self.user.first_name = "123"
-        self.user.last_name = "321"
-        self.storate = FileStorage()
+        cls.user = User()
+        cls.user.first_name = "123"
+        cls.user.last_name = "321"
+        cls.storate = FileStorage()
 
     @classmethod
     def td(self):
         """testing"""
-        del self.user
+        del cls.user
 
     def remove(self):
         """removin file.json"""
@@ -100,3 +100,16 @@ class TestDbStorage(unittest.TestCase):
         storage = FileStorage()
         obj = storage.all()
         self.assertIsNotNone(obj, None)
+        self.assertEqual(type(obj), dict)
+        self.assertIs(obj, storage._FileStorage__objects)
+
+    def test_new_method(self):
+        """test when new is created"""
+        storage = FileStorage()
+        obj = storage.all()
+        user = User()
+        user.id = str(123455)
+        user.name = "Kevin"
+        storage.new(user)
+        key = user.__class__.__name__ + "." + str(user.id)
+        self.assertIsNotNone(obj[key])
