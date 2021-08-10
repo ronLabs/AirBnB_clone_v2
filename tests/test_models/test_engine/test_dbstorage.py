@@ -1,89 +1,128 @@
 #!/usr/bin/python3
-"""
-Contains the TestDBStorageDocs and TestDBStorage classes
-"""
+""" Test Dbstorage"""
 
-from datetime import datetime
-import inspect
-import models
-from models.engine import db_storage
-from models.amenity import Amenity
-from models.base_model import BaseModel
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
-from models.user import User
-import json
 import os
-import pep8
 import unittest
-DBStorage = db_storage.DBStorage
-classes = {"Amenity": Amenity, "City": City, "Place": Place,
-           "Review": Review, "State": State, "User": User}
+import models
+from models.user import User
+from models.city import City
+from models.state import State
+from models.place import Place
+from models.amenity import Amenity
+from models.engine.db_storage import DBStorage
 
 
-class TestDBStorageDocs(unittest.TestCase):
-    """Testing docs"""
-    @classmethod
-    def setUpClass(cls):
-        """Set up for the doc tests"""
-        cls.dbs_f = inspect.getmembers(DBStorage, inspect.isfunction)
+@unittest.skipIf(models.is_db != 'db', 'Not testing Dbstorage')
+class testDBStorage(unittest.TestCase):
+    '''
+    Testing for DBStorage class
+    '''
 
-    def test_pep8_conformance_db_storage(self):
-        """testin pep8 in both files"""
-        pep8s = pep8.StyleGuide(quiet=True)
-        result = pep8s.check_files(['models/engine/db_storage.py'])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warnings).")
+    def test_user(self):
+        '''
+        Test user class with database
+        '''
+        user = User(email="derek@derek.com", password="password")
+        user.save()
+        for key, obj in models.storage.all('User').items():
+            if obj.id == user.id:
+                self.assertTrue(obj.password, "password")
+                self.assertTrue(obj.email, "derek@derek.com")
+            else:
+                continue
 
-    def test_pep8_conformance_test_db_storage(self):
-        """teting pep8"""
-        pep8s = pep8.StyleGuide(quiet=True)
-        result = pep8s.check_files(['tests/test_models/test_engine/\
-test_dbstorage.py'])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warnings).")
+    def test_state(self):
+        '''
+        Test state class with database
+        '''
+        state = State(name="Illinois")
+        state.save()
+        for key, obj in models.storage.all('State').items():
+            if obj.id == state.id:
+                self.assertTrue(obj.name, "Illinois")
+            else:
+                continue
 
-    def test_db_storage_module_docstring(self):
-        """module docsstring"""
-        self.assertIsNot(db_storage.__doc__, None,
-                         "db_storage.py needs a docstring")
-        self.assertTrue(len(db_storage.__doc__) >= 1,
-                        "db_storage.py needs a docstring")
+    def test_city(self):
+        '''
+        Test city class with database
+        '''
+        state = State(name="California")
+        city = City(name="Los Angeles", state_id=state.id)
+        state.save()
+        city.save()
+        for key, obj in models.storage.all('City').items():
+            if obj.id == city.id:
+                self.assertTrue(obj.name, "Los Angeles")
+                self.assertTrue(obj.state_id, state.id)
+            else:
+                continue
 
-    def test_db_storage_class_docstring(self):
-        """class dosctring"""
-        self.assertIsNot(DBStorage.__doc__, None,
-                         "DBStorage class needs a docstring")
-        self.assertTrue(len(DBStorage.__doc__) >= 1,
-                        "DBStorage class needs a docstring")
+    def test_place(self):
+        '''
+        Test place class with database
+        '''
+        state = State(name="Washington")
+        city = City(name="Seattle", state_id=state.id)
+        user = User(email="@dhk", password="pwd")
+        place = Place(city_id=city.id, user_id=user.id, name="House",
+                      number_rooms=2, number_bathrooms=1, max_guest=2,
+                      price_by_night=50)
+        state.save()
+        city.save()
+        user.save()
+        place.save()
+        for key, obj in models.storage.all('Place').items():
+            if obj.id == place.id:
+                self.assertTrue(obj.city_id, city.id)
+                self.assertTrue(obj.user_id, user.id)
+                self.assertTrue(obj.name, "House")
+                self.assertTrue(obj.number_rooms, 2)
+                self.assertTrue(obj.number_bathrooms, 1)
+                self.assertTrue(obj.max_guest, 2)
+                self.assertTrue(obj.price_by_night, 50)
+                self.assertTrue(obj.description is None)
+            else:
+                continue
 
-    def test_dbs_func_docstrings(self):
-        """methods doctrings"""
-        for func in self.dbs_f:
-            self.assertIsNot(func[1].__doc__, None,
-                             "{:s} method needs a docstring".format(func[0]))
-            self.assertTrue(len(func[1].__doc__) >= 1,
-                            "{:s} method needs a docstring".format(func[0]))
+    def test_amenity(self):
+        '''
+        Test amenity class with database
+        '''
+        amenity = Amenity(name="Wifi")
+        amenity.save()
+        for key, obj in models.storage.all('Amenity').items():
+            if obj.id == amenity.id:
+                self.assertTrue(obj.name, "Wifi")
+            else:
+                continue
 
+    def test_all(self):
+        '''
+        Test all function
+        '''
+        user1 = User(email="email1", password="password1")
+        user2 = User(email="email2", password="password2")
+        user3 = User(email="email3", password="password3")
 
-class TestFileStorage(unittest.TestCase):
-    """Test the FileStorage class"""
+        user1.save()
+        user2.save()
+        user3.save()
+        obj_dict = models.storage.all('User')
+        self.assertTrue(len(obj_dict), 3)
 
-    @unittest.skipIf(models.is_db != 'db', 'Not testing Dbstorage')
-    def test_all_returns_dict(self):
-        """Test that all returns a dictionaty"""
-        self.assertIs(type(models.storage.all()), dict)
+    def test_delete(self):
+        '''
+        Test delete function
+        '''
+        state = State(name="New York")
+        state.save()
+        models.storage.delete(state)
+        models.storage.save()
+        all_stored = models.storage.all()
+        self.assertRaises(KeyError, all_stored.__getitem__, "State." + state.id)
 
-    @unittest.skipIf(models.is_db != 'db', 'Not testing Dbstorage')
-    def test_all_no_class(self):
-        """Test that all returns all rows when no class is passed"""
+    def teardown(self):
+        self.session.close()
+        self.session.rollback()
 
-    @unittest.skipIf(models.is_db != 'db', 'Not testing Dbstorage')
-    def test_new(self):
-        """test that new adds an object to the database"""
-
-    @unittest.skipIf(models.is_db != 'db', 'Not testing Dbstorage')
-    def test_save(self):
-        """Test that save properly saves objects to file.json"""
