@@ -6,6 +6,7 @@ Contains the TestDBStorageDocs and TestDBStorage classes
 from datetime import datetime
 import inspect
 import models
+from models.engine import file_storage
 from models.engine import db_storage
 from models.amenity import Amenity
 from models.base_model import BaseModel
@@ -14,10 +15,12 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
+import MySQLdb
 import json
 import os
 import pep8
 import unittest
+FileStorage = file_storage.FileStorage
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
@@ -66,3 +69,34 @@ test_dbstorage.py'])
                              "{:s} method needs a docstring".format(func[0]))
             self.assertTrue(len(func[1].__doc__) >= 1,
                             "{:s} method needs a docstring".format(func[0]))
+
+
+@unittest.skipIf(models.is_db != 'db', 'Testing Dbstorage')
+class TestDbStorage(unittest.TestCase):
+    """testing db_storage"""
+
+    @classmethod
+    def setUpClass(self):
+        """settuin up test"""
+        self.user = User()
+        self.user.first_name = "123"
+        self.user.last_name = "321"
+        self.storate = FileStorage()
+
+    @classmethod
+    def td(self):
+        """testing"""
+        del self.user
+
+    def remove(self):
+        """removin file.json"""
+        try:
+            os.remove("file.json")
+        except Exception:
+            pass
+
+    def test_all(self):
+        """testin all method"""
+        storage = FileStorage()
+        obj = storage.all()
+        self.assertIsNotNone(obj, None)
