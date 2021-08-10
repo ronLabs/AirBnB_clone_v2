@@ -22,7 +22,7 @@ Model = file_storage.FileStorage
 FileStorage = file_storage.FileStorage
 path1 = "models/engine/file_storage.py"
 path2 = "tests/test_models/test_engine/test_file_storage.py"
-module_doc = models.city.__doc__
+module_doc = file_storage.FileStorage.__doc__
 
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "Review": Review,
            "City": City, "User": User, "State": State, "Place": Place}

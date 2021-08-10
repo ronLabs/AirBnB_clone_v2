@@ -7,7 +7,7 @@ import time
 import json
 from unittest import mock
 import os
-from models.engine import file_storage
+from models.engine import db_storage
 from models.city import City
 from models.amenity import Amenity
 from models.user import User
@@ -18,11 +18,11 @@ from models.base_model import BaseModel
 from models import storage
 import pep8 as pycodestyle
 
-Model = file_storage.FileStorage
-FileStorage = file_storage.FileStorage
+Model = db_storage.DBStorage
+FileStorage = db_storage.DBStorage
 path1 = "models/engine/db_storage.py"
 path2 = "tests/test_models/test_engine/test_dbstorage.py"
-module_doc = models.city.__doc__
+module_doc = db_storage.DBStorage.__doc__
 
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "Review": Review,
            "City": City, "User": User, "State": State, "Place": Place}
