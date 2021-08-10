@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import patch
 from io import StringIO
 import pep8
+import pep8 as pycodestyle
 import os
 import json
 import console
@@ -25,6 +26,7 @@ City = HBNBCommand
 module_doc = HBNBCommand.__doc__
 path1 = "console.py"
 path2 = "tests/test_console.py"
+
 
 class TestBaseModelDocs(unittest.TestCase):
     """Test to check behaviors"""
@@ -69,6 +71,7 @@ class TestBaseModelDocs(unittest.TestCase):
                     len(func[1].__doc__) > 1,
                     "{:s} method needs a docstring".format(func[0])
                 )
+
 
 class ConsoleTest(unittest.TestCase):
     """testing console"""

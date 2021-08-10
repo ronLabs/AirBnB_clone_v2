@@ -13,6 +13,7 @@ from models.amenity import Amenity
 from models.review import Review
 import shlex
 
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -132,7 +133,7 @@ class HBNBCommand(cmd.Cmd):
                         except:
                             continue
                 dic[key] = value
-        return (dic)      
+        return (dic)
 
     def do_create(self, args):
         """ Create an object of any class"""
@@ -140,7 +141,7 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
             return
-        if args[0] in  HBNBCommand.classes:
+        if args[0] in HBNBCommand.classes:
             dic = self.dic_creator(args[1:])
             instance = HBNBCommand.classes[args[0]](**dic)
         else:
