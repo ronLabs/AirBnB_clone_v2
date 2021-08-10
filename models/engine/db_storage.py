@@ -10,6 +10,8 @@ from models.state import State
 from models.user import User
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
+import unittest
+import models
 
 
 class DBStorage:
@@ -30,6 +32,7 @@ class DBStorage:
         if getenv('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
 
+    @unittest.skipIf(models.is_db == 'db', 'Not testing Dbstorage')
     def all(self, cls=None):
         """ Queries a database for objects """
         if not cls:
