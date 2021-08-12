@@ -32,7 +32,6 @@ class DBStorage:
         if getenv('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
 
-    @unittest.skipIf(models.is_db == 'db', 'Not testing Dbstorage')
     def all(self, cls=None):
         """ Queries a database for objects """
         if not cls:
