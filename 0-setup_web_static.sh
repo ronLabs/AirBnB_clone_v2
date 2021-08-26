@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # This script sets up a web server for deployment
 apt-get update
-apt-get install nginx
+apt-get install -y nginx
 
 mkdir -p /data/web_static/shared/
 mkdir -p /data/web_static/releases/test/
@@ -21,8 +21,6 @@ ln -s /data/web_static/releases/test/ /data/web_static/current
 chown -R ubuntu /data
 chgrp -R ubuntu /data
 
-cp /etc/nginx/sites-available/default "/etc/nginx/sites-available/default-$(date +%s%N).bak"
-
 cat > /etc/nginx/sites-available/default << EOF
 # Default server configuration
 server {
@@ -36,6 +34,7 @@ server {
  
 	location /hbnb_static {
 		alias /data/web_static/current;
+		index index.html index.htm;
 	}
 
 	location =/redirect_me {
