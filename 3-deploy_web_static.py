@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """This module contains a fabric script that
 deploys static content to web servers"""
-from fabric.api import env, put, run
+from fabric.api import env, put, local, run
 from datetime import datetime as dt
 from os import path
 
