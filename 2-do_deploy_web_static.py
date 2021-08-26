@@ -11,7 +11,7 @@ path_releases = '/data/web_static/releases'
 
 def do_deploy(archive_path):
     """This function distributs an archive file"""
-    if not path.exists(archive_path):
+    if not path.isfile(archive_path):
         return False
     filename = archive_path.split('/')[-1]
     fname = filename.split('.')[0]
@@ -20,8 +20,10 @@ def do_deploy(archive_path):
     if run('mkdir -p /data/web_static/releases/{}'
             .format(fname)).failed:
         return False
-    if run('tar -xzvf /tmp/{} -C /data/web_static/releases/{}'
+    if run('tar -xzf /tmp/{} -C /data/web_static/releases/{}'
             .format(filename, fname)).failed:
+        return False
+    if run('rm /tmp/{}'.format(filename)).failed:
         return False
     path_web = '{}/{}'.format(path_releases, fname)
     if run('mv {}/web_static/* {}'
@@ -31,7 +33,7 @@ def do_deploy(archive_path):
         return False
     if run('rm -rf /data/web_static/current').failed:
         return False
-    if run('ln -s {}/{} /data/web_static/current'.
-            format(path_releases, fname)).failed:
+    if run('ln -s {} /data/web_static/current'.
+            format(path_web)).failed:
         return False
     return True
