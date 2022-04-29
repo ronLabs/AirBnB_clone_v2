@@ -10,7 +10,7 @@ cat > /data/web_static/releases/test/index.html << EOF
   <head>
   </head>
   <body>
-    Holberton School
+    Im a test page
   </body>
 </html>
 EOF
