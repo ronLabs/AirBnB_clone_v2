@@ -1,39 +1,30 @@
 #!/usr/bin/python3
-"""This module contains a fabric script that
-creates and distributes an archive to the web servers"""
-from fabric.api import env, put, run
-from datetime import datetime as dt
-from os import path
+"""
+Fabric script based on the file 1-pack_web_static.py that distributes an
+archive to the web servers
+"""
 
-env.hosts = ['35.243.194.38', '54.91.79.148']
-path_releases = '/data/web_static/releases'
+from fabric.api import put, run, env
+from os.path import exists
+env.hosts = ['34.138.88.191', '3.91.150.97']
 
 
 def do_deploy(archive_path):
-    """This function distributs an archive file"""
-    if not path.isfile(archive_path):
+    """distributes an archive to the web servers"""
+    if exists(archive_path) is False:
         return False
-    filename = archive_path.split('/')[-1]
-    fname = filename.split('.')[0]
-    if put(archive_path, '/tmp/{}'.format(filename)).failed:
+    try:
+        file_ext = archive_path.split("/")[-1]
+        file_no_ext = file_n.split(".")[0]
+        path = "/data/web_static/releases/"
+        put(archive_path, '/tmp/')
+        run('mkdir -p {}{}/'.format(path, file_no_ext))
+        run('tar -xzf /tmp/{} -C {}{}/'.format(file_ext, path, file_no_ext))
+        run('rm /tmp/{}'.format(file_ext))
+        run('mv {0}{1}/web_static/* {0}{1}/'.format(path, file_no_ext))
+        run('rm -rf {}{}/web_static'.format(path, file_no_ext))
+        run('rm -rf /data/web_static/current')
+        run('ln -s {}{}/ /data/web_static/current'.format(path, file_no_ext))
+        return True
+    except:
         return False
-    if run('mkdir -p /data/web_static/releases/{}'
-            .format(fname)).failed:
-        return False
-    if run('tar -xzf /tmp/{} -C /data/web_static/releases/{}'
-            .format(filename, fname)).failed:
-        return False
-    if run('rm /tmp/{}'.format(filename)).failed:
-        return False
-    path_web = '{}/{}'.format(path_releases, fname)
-    if run('mv {}/web_static/* {}'
-            .format(path_web, path_web)).failed:
-        return False
-    if run('rm -rf {}/web_static'.format(path_web)).failed:
-        return False
-    if run('rm -rf /data/web_static/current').failed:
-        return False
-    if run('ln -s {} /data/web_static/current'.
-            format(path_web)).failed:
-        return False
-    return True
