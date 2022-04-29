@@ -3,7 +3,7 @@
 deploys static content to web servers"""
 from fabric.api import env, put, local, run
 from datetime import datetime as dt
-from os import path
+from os.path import exists
 
 env.hosts = ['34.138.88.191', '3.91.150.97']
 
