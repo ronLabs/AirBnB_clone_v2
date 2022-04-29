@@ -12,6 +12,7 @@ def do_pack():
 
     if local('mkdir -p versions').failed:
         return None
+    #zip all the content of directory web_static
     if local('tar -czvf {} web_static'.format(tgzname)).failed:
         return None
     return tgzname
