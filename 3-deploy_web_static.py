@@ -5,8 +5,7 @@ from fabric.api import env, put, local, run
 from datetime import datetime as dt
 from os import path
 
-env.hosts = ['35.243.194.38', '54.91.79.148']
-path_releases = '/data/web_static/releases'
+env.hosts = ['34.138.88.191', '3.91.150.97']
 
 
 def do_pack():
@@ -23,31 +22,30 @@ def do_pack():
 
 
 def do_deploy(archive_path):
-    """This function distributs an archive file"""
-    if not path.isfile(archive_path):
+    """distributes an archive to the web servers"""
+    if exists(archive_path) is False:
         return False
-    filename = archive_path.split('/')[-1]
-    fname = filename.split('.')[0]
-    if put(archive_path, '/tmp/{}'.format(filename)).failed:
+
+    file_ext = archive_path.split("/")[-1]
+    file_no_ext = file_ext.split(".")[0]
+    path = "/data/web_static/releases/"
+    if put(archive_path, '/tmp/{}'.format(file_ext)).failed:
         return False
-    if run('mkdir -p /data/web_static/releases/{}'
-            .format(fname)).failed:
+    if run('mkdir -p {}{}/'.format(path, file_no_ext)).failed:
         return False
-    if run('tar -xzf /tmp/{} -C /data/web_static/releases/{}'
-            .format(filename, fname)).failed:
+    if run('tar -xzf /tmp/{} -C {}{}/'
+            .format(file_ext, path, file_no_ext)).failed:
         return False
-    if run('rm /tmp/{}'.format(filename)).failed:
+    if run('rm /tmp/{}'.format(file_ext)).failed:
         return False
-    path_web = '{}/{}'.format(path_releases, fname)
-    if run('mv {}/web_static/* {}'
-            .format(path_web, path_web)).failed:
+    if run('mv {0}{1}/web_static/* {0}{1}/'.format(path, file_no_ext)).failed:
         return False
-    if run('rm -rf {}/web_static'.format(path_web)).failed:
+    if run('rm -rf {}{}/web_static'.format(path, file_no_ext)).failed:
         return False
     if run('rm -rf /data/web_static/current').failed:
         return False
-    if run('ln -s {} /data/web_static/current'.
-            format(path_web)).failed:
+    if run('ln -s {}{}/ /data/web_static/current'
+           .format(path, file_no_ext)).failed:
         return False
     return True
 
