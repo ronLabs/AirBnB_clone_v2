@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """This module starts a flask app on port 0.0.0.0:5000"""
-
 from flask import Flask
 app = Flask(__name__)
 
@@ -11,5 +10,5 @@ def hello_world():
     return 'Hello HBNB!'
 
 
-if __name__ == '__main__'
+if __name__ == '__main__':
     app.run(host='0.0.0.0')
