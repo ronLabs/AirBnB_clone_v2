@@ -19,7 +19,7 @@ def hbnb():
 @app.route('/c/<text>', strict_slashes=False)
 def display(text):
     """Returns text passed as a parameter"""
-    return 'c {}'.format(text.replace('_', ' '))
+    return 'C {}'.format(text.replace('_', ' '))
 
 
 if __name__ == '__main__':
