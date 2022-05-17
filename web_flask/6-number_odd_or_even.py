@@ -57,6 +57,6 @@ def num_html_even_odd(n):
         even_odd = 'even'
     return render_template('6-number_odd_or_even.html', n=n, even_odd=even_odd)
 
-    
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
